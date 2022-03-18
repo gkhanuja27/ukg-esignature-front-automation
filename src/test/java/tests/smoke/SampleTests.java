@@ -12,8 +12,8 @@ class SampleTests extends BaseTests {
     @DisplayName("Test successful login")
     void successLoginTest() {
         given("I am using valid login credentials");
-        esign.login.userNameTextBox.set("gurpreet_khanuja@ultimatesoftware.com");
-        esign.login.passwordTextBox.set("XXXX");
+        esign.login.userNameTextBox.set("esign.user@ukg.com");
+        esign.login.passwordTextBox.set("Azeaze1234");
 
         when("I click the login button");
         esign.login.loginButton.click();
@@ -26,8 +26,8 @@ class SampleTests extends BaseTests {
     @DisplayName("Test signature title")
     void clickSignatureTitleTest() {
         given("I am using valid login credentials");
-        esign.login.userNameTextBox.set("gurpreet_khanuja@ultimatesoftware.com");
-        esign.login.passwordTextBox.set("XXXX");
+        esign.login.userNameTextBox.set("esign.user@ukg.com");
+        esign.login.passwordTextBox.set("Azeaze1234");
 
         when("I click the login button and then click on the Signature title");
         esign.login.loginButton.click();
