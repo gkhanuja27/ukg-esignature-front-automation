@@ -1,0 +1,89 @@
+version '0.0.1'
+
+apply plugin: 'java'
+
+ext {
+    aeonVersion = '1.24.2'
+}
+
+repositories {
+    mavenCentral()
+    maven { url "http://artifactory.mia.ulti.io/artifactory/maven" }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.1'
+
+    // Selenium plugin for web based tests
+    compile(group: 'aeon', name: 'aeon.selenium', version: aeonVersion)
+    compile(group: 'aeon', name: 'aeon.extensions.log4j2', version: aeonVersion)
+    compile(group: 'aeon', name: 'aeon.extensions.reporting', version: aeonVersion)
+    compile(group: 'aeon', name: 'aeon.extensions.junit5', version: aeonVersion)
+    compile(group: 'org.gradle', name: 'gradle-core', version: '4.2.1')
+
+    // Appium plugin for hybrid mobile applications and web based tests
+    // (please remove the aeon.selenium reference above if you are going to use the appium plugin)
+    //compile(group: 'aeon', name: 'aeon.appium', version: '1.15.0')
+}
+
+// Downloads cacerts.jks from Artifactory.
+// This is necessary if using the Metrics or Axe plugins
+task fetchCacerts {
+    ant.get src: 'https://artifactory.mia.ulti.io/artifactory/quality-growth-prod/cacerts.jks',
+            dest: new File('cacerts.jks')
+    ant.move file: 'cacerts.jks', todir: 'lib'
+}
+
+assemble.dependsOn(fetchCacerts)
+
+test {
+    // This allows you to use multiple different pre-defined sets of configuration options
+    // by simply switching between them in "gradle.properties" file. If you want to make use of
+    // this also in your IDE please make sure that tests are run through Gradle (for IntelliJ
+    // that means setting the option "Run tests using" to "Gradle Test Runner" in
+    // "Preferences | Build, Execution, Deployment | Build Tools | Gradle | Runner".
+    //
+    // In the pipeline this option can be overridden by setting an environment variable
+    // called "ORG_GRADLE_PROJECT_testConfiguration".
+    if(testConfiguration){
+        environment "AEON_CONFIG", "src/test/resources/" + testConfiguration + ".properties"
+    }
+
+    // This configures the number of test fixtures that are run concurrently through Gradle.
+    // The default value can be changed in the "gradle.properties" file.
+    //
+    // In the pipeline this option can be overridden by setting an environment variable
+    // called "ORG_GRADLE_PROJECT_threads".
+    if (threads) {
+        maxParallelForks = threads.toInteger()
+    }
+
+    systemProperties['junit.jupiter.execution.parallel.enabled'] = true
+
+    // This allows you to run subsets of tests based on tagged categories.
+    useJUnitPlatform {
+//        def includedTags = System.getenv('included_tags')
+//        def excludedTags = System.getenv('excluded_tags')
+//        if (includedTags != null)
+//        {
+//            def tags = includedTags.split("\\s*(,|\\s)\\s*")
+//            tags.each {tag ->
+//                includeTags tag
+//            }
+//        }
+//
+//        if (excludedTags != null)
+//        {
+//            def tags = excludedTags.split("\\s*(,|\\s)\\s*")
+//            tags.each {tag ->
+//                excludeTags tag
+//            }
+//        }
+    }
+}
+
+wrapper {
+    group 'build setup'
+    gradleVersion = '5.3.1'
+}

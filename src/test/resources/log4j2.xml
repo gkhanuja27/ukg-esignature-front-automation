@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" packages="com.ultimatesoftware.aeon.extensions.log4j2">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n"/>
+        </Console>
+        <RollingFile name="RollingFile" filename="log/AeonLog.log"
+                     filepattern="${logPath}/%d{yyyyMMddHHmmss}-AeonLog.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+        <File name="File" filename="log/AeonLog.html">
+            <AeonHtmlLayout/>
+        </File>
+        <PIdFileAppender name="PIdFileAppender" fileName="log/AeonLog.html">
+            <AeonHtmlLayout/>
+        </PIdFileAppender>
+    </Appenders>
+    <Loggers>
+        <Root level="error">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="PIdFileAppender"/>
+            <AppenderRef ref="File"/>
+        </Root>
+        <Logger name="com.ultimatesoftware.aeon" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="PIdFileAppender"/>
+            <AppenderRef ref="File" level="error"/>
+        </Logger>
+        <Logger name="tests" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="PIdFileAppender"/>
+            <AppenderRef ref="File" level="error"/>
+        </Logger>
+    </Loggers>
+</Configuration>
